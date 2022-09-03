@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"rest-api-test/internal/config"
 	"rest-api-test/internal/user"
+	"rest-api-test/internal/user/cache"
 	"rest-api-test/internal/user/db"
 	"rest-api-test/pkg/client/mongodb"
 	"rest-api-test/pkg/client/redisdb"
@@ -39,10 +40,13 @@ func main() {
 	}
 
 	logger.Info("initializing new user storage")
-	storage := db.NewStorage(mongoClient, rdb, cfg.Collection, logger)
+	storage := db.NewStorage(mongoClient, cfg.Collection, logger)
+
+	logger.Info("initializing new user cache")
+	c := cache.NewCache(rdb)
 
 	logger.Info("initializing new user service")
-	service := user.NewService(&storage, logger)
+	service := user.NewService(storage, logger, c)
 
 	logger.Info("register new user handler")
 	handler := user.NewUserHandler(logger, cfg, service)

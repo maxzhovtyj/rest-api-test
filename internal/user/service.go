@@ -6,29 +6,21 @@ import (
 )
 
 type Service struct {
-	storage *Storage
+	storage Storage
 	logger  *logging.Logger
+	cache   Cache
 }
 
-func NewService(repo *Storage, logger *logging.Logger) *Service {
+func NewService(repo Storage, logger *logging.Logger, cache Cache) *Service {
 	return &Service{
 		storage: repo,
 		logger:  logger,
+		cache:   cache,
 	}
 }
 
 func (s *Service) CreateOne(ctx context.Context, user CreateUserDTO) (User, error) {
-	// TODO generatePasswordHash
-	// passwordHash := generatePasswordHash(password)
-	//userInfo := User{
-	//	Username:     user.Username,
-	//	PasswordHash: "",
-	//	Email:        user.Email,
-	//}
-	//createdUserId, err := s.storage.Create(ctx, userInfo)
-	//if err != nil {
-	//}
-	//
-	//return createdUserId, nil
+	s.cache.SetJson(ctx)
+	s.cache.GetJson(ctx)
 	return User{}, nil
 }

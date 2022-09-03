@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/go-redis/redis/v9"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -15,14 +14,12 @@ import (
 
 type storage struct {
 	collection *mongo.Collection
-	cache      *redis.Client
 	logger     *logging.Logger
 }
 
-func NewStorage(database *mongo.Database, rdb *redis.Client, collection string, logger *logging.Logger) user.Storage {
+func NewStorage(database *mongo.Database, collection string, logger *logging.Logger) user.Storage {
 	return &storage{
 		collection: database.Collection(collection),
-		cache:      rdb,
 		logger:     logger,
 	}
 }
