@@ -1,0 +1,7 @@
+db:
+  database: "testdb"
+  collection: "testcollection"
+  username: "maxzhovtyj"
+redis:
+  host: "localhost"
+  port: "6379"
