@@ -38,6 +38,7 @@ func (h *handler) Register(router *httprouter.Router) {
 	router.HandlerFunc(http.MethodPut, userUrl, apperrors.Middleware(h.UpdateUser))
 	router.HandlerFunc(http.MethodPatch, userUrl, apperrors.Middleware(h.PartUpdateUser))
 	router.HandlerFunc(http.MethodDelete, userUrl, apperrors.Middleware(h.DeleteUser))
+	router.HandlerFunc(http.MethodGet, "/invoice", apperrors.Middleware(h.InvoicePdf))
 }
 
 func (h *handler) GetList(w http.ResponseWriter, r *http.Request) error {
@@ -49,14 +50,21 @@ func (h *handler) GetList(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	w.Write(marshal)
+	_, err = w.Write(marshal)
+	if err != nil {
+		return err
+	}
 
-	return err
+	return nil
 }
 
 func (h *handler) GetUserByUUID(w http.ResponseWriter, r *http.Request) error {
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(fmt.Sprintf("get user by uuid")))
+	_, err := w.Write([]byte(fmt.Sprintf("get user by uuid")))
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -87,5 +95,9 @@ func (h *handler) PartUpdateUser(w http.ResponseWriter, r *http.Request) error {
 func (h *handler) DeleteUser(w http.ResponseWriter, r *http.Request) error {
 	w.WriteHeader(http.StatusNoContent)
 	w.Write([]byte(fmt.Sprintf("delete user")))
+	return nil
+}
+
+func (h *handler) InvoicePdf(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }

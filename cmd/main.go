@@ -9,10 +9,8 @@ import (
 	"net/http"
 	"rest-api-test/internal/config"
 	"rest-api-test/internal/user"
-	"rest-api-test/internal/user/cache"
 	"rest-api-test/internal/user/db"
 	"rest-api-test/pkg/client/mongodb"
-	"rest-api-test/pkg/client/redisdb"
 	"rest-api-test/pkg/logging"
 	"time"
 )
@@ -25,13 +23,6 @@ func main() {
 	logger.Info("create router")
 	router := httprouter.New()
 
-	logger.Info("initializing new redis client")
-	rdb, err := redisdb.NewClient(context.Background(), &cfg.Redis)
-	if err != nil {
-		logger.Fatalln("failed to initialize redis client")
-		panic(err)
-	}
-
 	logger.Info("initializing new mongo client")
 	mongoClient, err := mongodb.NewClient(context.Background(), cfg)
 	if err != nil {
@@ -42,11 +33,8 @@ func main() {
 	logger.Info("initializing new user storage")
 	storage := db.NewStorage(mongoClient, cfg.Collection, logger)
 
-	logger.Info("initializing new user cache")
-	c := cache.NewCache(rdb)
-
 	logger.Info("initializing new user service")
-	service := user.NewService(storage, logger, c)
+	service := user.NewService(storage, logger, nil)
 
 	logger.Info("register new user handler")
 	handler := user.NewUserHandler(logger, cfg, service)

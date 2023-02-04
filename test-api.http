@@ -70,3 +70,10 @@ Content-Type: application/json
 
 ###
 
+GET http://localhost:1234/invoice
+Content-Type: application/json
+
+{}
+
+###
+
